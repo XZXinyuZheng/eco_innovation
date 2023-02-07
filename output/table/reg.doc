@@ -1,0 +1,61 @@
+{\rtf1\fs24
+\trowd\trgaph75\trleft-75\intbl\trqc\clbrdrt\brdrs\cellx2304\clbrdrt\brdrs\cellx3600\clbrdrt\brdrs\cellx5472\clbrdrt\brdrs\cellx7344\clbrdrt\brdrs\cellx9216\clbrdrt\brdrs\cellx10944
+\ql \cell\qc (1)\cell\qc (2)\cell\qc (3)\cell\qc (4)\cell\qc (5)\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2304\cellx3600\cellx5472\cellx7344\cellx9216\cellx10944
+\trowd\trgaph75\trleft-75\trqc\clbrdrb\brdrs\cellx2304\clbrdrb\brdrs\cellx3600\clbrdrb\brdrs\cellx5472\clbrdrb\brdrs\cellx7344\clbrdrb\brdrs\cellx9216\clbrdrb\brdrs\cellx10944
+\ql VARIABLES\cell\qc Model 1\cell\qc Model 2\cell\qc Model 3\cell\qc Model 4\cell\qc Model 5\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2304\cellx3600\cellx5472\cellx7344\cellx9216\cellx10944
+\ql \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\row
+\ql 1.fc\cell\qc -0.0766\cell\qc -0.0918*\cell\qc -0.0958*\cell\qc -0.101**\cell\qc -0.0305\cell\row
+\ql \cell\qc (0.0553)\cell\qc (0.0515)\cell\qc (0.0514)\cell\qc (0.0511)\cell\qc (0.0499)\cell\row
+\ql 2.fc\cell\qc -0.0471\cell\qc -0.0567\cell\qc -0.0648\cell\qc -0.0817*\cell\qc 0.0130\cell\row
+\ql \cell\qc (0.0497)\cell\qc (0.0470)\cell\qc (0.0471)\cell\qc (0.0469)\cell\qc (0.0467)\cell\row
+\ql 3.fc\cell\qc 0.0150\cell\qc 0.0400\cell\qc 0.0529\cell\qc 0.0173\cell\qc 0.0703\cell\row
+\ql \cell\qc (0.0571)\cell\qc (0.0537)\cell\qc (0.0536)\cell\qc (0.0534)\cell\qc (0.0552)\cell\row
+\ql 4.fc\cell\qc 0.172**\cell\qc 0.0540\cell\qc 0.0680\cell\qc 0.0240\cell\qc -0.0329\cell\row
+\ql \cell\qc (0.0754)\cell\qc (0.0710)\cell\qc (0.0704)\cell\qc (0.0703)\cell\qc (0.0724)\cell\row
+\ql 1.innovation\cell\qc \cell\qc 0.696***\cell\qc 0.674***\cell\qc 0.663***\cell\qc 0.638***\cell\row
+\ql \cell\qc \cell\qc (0.0448)\cell\qc (0.0446)\cell\qc (0.0445)\cell\qc (0.0428)\cell\row
+\ql 2.innovation\cell\qc \cell\qc 1.070***\cell\qc 1.030***\cell\qc 1.008***\cell\qc 1.017***\cell\row
+\ql \cell\qc \cell\qc (0.0555)\cell\qc (0.0552)\cell\qc (0.0552)\cell\qc (0.0537)\cell\row
+\ql 3.innovation\cell\qc \cell\qc 1.296***\cell\qc 1.237***\cell\qc 1.223***\cell\qc 1.239***\cell\row
+\ql \cell\qc \cell\qc (0.0724)\cell\qc (0.0721)\cell\qc (0.0714)\cell\qc (0.0698)\cell\row
+\ql 4.innovation\cell\qc \cell\qc 1.621***\cell\qc 1.521***\cell\qc 1.473***\cell\qc 1.533***\cell\row
+\ql \cell\qc \cell\qc (0.0953)\cell\qc (0.0942)\cell\qc (0.0937)\cell\qc (0.0906)\cell\row
+\ql 5.innovation\cell\qc \cell\qc 1.858***\cell\qc 1.765***\cell\qc 1.743***\cell\qc 1.845***\cell\row
+\ql \cell\qc \cell\qc (0.126)\cell\qc (0.126)\cell\qc (0.123)\cell\qc (0.121)\cell\row
+\ql 1.iso\cell\qc \cell\qc 0.224***\cell\qc 0.0937*\cell\qc 0.0296\cell\qc 0.119**\cell\row
+\ql \cell\qc \cell\qc (0.0505)\cell\qc (0.0513)\cell\qc (0.0511)\cell\qc (0.0495)\cell\row
+\ql competitor\cell\qc \cell\qc -1.21e-05***\cell\qc -9.87e-06***\cell\qc -1.01e-05***\cell\qc -8.24e-06**\cell\row
+\ql \cell\qc \cell\qc (3.53e-06)\cell\qc (3.52e-06)\cell\qc (3.51e-06)\cell\qc (3.50e-06)\cell\row
+\ql cost\cell\qc \cell\qc 1.50e-10**\cell\qc 1.18e-10**\cell\qc 1.16e-10**\cell\qc 8.31e-11**\cell\row
+\ql \cell\qc \cell\qc (5.91e-11)\cell\qc (5.34e-11)\cell\qc (5.08e-11)\cell\qc (0)\cell\row
+\ql 1.customer\cell\qc \cell\qc 0.978***\cell\qc 0.938***\cell\qc 0.902***\cell\qc 0.806***\cell\row
+\ql \cell\qc \cell\qc (0.0544)\cell\qc (0.0542)\cell\qc (0.0540)\cell\qc (0.0536)\cell\row
+\ql 1.tax\cell\qc \cell\qc 0.130***\cell\qc 0.142***\cell\qc 0.192***\cell\qc 0.453***\cell\row
+\ql \cell\qc \cell\qc (0.0435)\cell\qc (0.0437)\cell\qc (0.0437)\cell\qc (0.0495)\cell\row
+\ql 1.standard\cell\qc \cell\qc 1.190***\cell\qc 1.160***\cell\qc 1.111***\cell\qc 1.068***\cell\row
+\ql \cell\qc \cell\qc (0.0522)\cell\qc (0.0521)\cell\qc (0.0519)\cell\qc (0.0527)\cell\row
+\ql f_external\cell\qc \cell\qc -0.000667\cell\qc -0.000959*\cell\qc -0.000669\cell\qc 0.000953*\cell\row
+\ql \cell\qc \cell\qc (0.000563)\cell\qc (0.000560)\cell\qc (0.000559)\cell\qc (0.000572)\cell\row
+\ql state_owned\cell\qc \cell\qc 0.0164***\cell\qc 0.0132***\cell\qc 0.0131***\cell\qc 0.00573**\cell\row
+\ql \cell\qc \cell\qc (0.00271)\cell\qc (0.00268)\cell\qc (0.00262)\cell\qc (0.00248)\cell\row
+\ql 2.size\cell\qc \cell\qc \cell\qc 0.325***\cell\qc 0.302***\cell\qc 0.306***\cell\row
+\ql \cell\qc \cell\qc \cell\qc (0.0391)\cell\qc (0.0389)\cell\qc (0.0373)\cell\row
+\ql 3.size\cell\qc \cell\qc \cell\qc 0.541***\cell\qc 0.533***\cell\qc 0.574***\cell\row
+\ql \cell\qc \cell\qc \cell\qc (0.0512)\cell\qc (0.0508)\cell\qc (0.0489)\cell\row
+\ql 1.sector_2\cell\qc \cell\qc \cell\qc \cell\qc 0.387***\cell\qc 0.298***\cell\row
+\ql \cell\qc \cell\qc \cell\qc \cell\qc (0.0355)\cell\qc (0.0354)\cell\row
+\ql Constant\cell\qc 0.0158\cell\qc -0.875***\cell\qc -1.035***\cell\qc -1.190***\cell\qc -1.081***\cell\row
+\ql \cell\qc (0.0278)\cell\qc (0.0364)\cell\qc (0.0384)\cell\qc (0.0401)\cell\qc (0.110)\cell\row
+\ql \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\row
+\ql Observations\cell\qc 10,993\cell\qc 9,177\cell\qc 9,106\cell\qc 9,106\cell\qc 9,106\cell\row
+\ql R-squared\cell\qc 0.001\cell\qc 0.271\cell\qc 0.280\cell\qc 0.289\cell\qc 0.357\cell\row
+\ql Control country\cell\qc NO\cell\qc NO\cell\qc NO\cell\qc NO\cell\qc YES\cell\row
+\ql Control size\cell\qc \cell\qc \cell\qc YES\cell\qc YES\cell\qc YES\cell\row
+\trowd\trgaph75\trleft-75\trqc\trbrdrb\brdrs\clbrdrb\brdrs\cellx2304\clbrdrb\brdrs\cellx3600\clbrdrb\brdrs\cellx5472\clbrdrb\brdrs\cellx7344\clbrdrb\brdrs\cellx9216\clbrdrb\brdrs\cellx10944
+\ql Control sector\cell\qc \cell\qc \cell\qc NO\cell\qc YES\cell\qc YES\cell\row
+\pard\qc
+Robust standard errors in parentheses\par
+*** p<0.01, ** p<0.05, * p<0.1\par
+}

@@ -1,0 +1,40 @@
+########################################################################
+# Ignore everything
+*
+#######################
+# List of files with GitHub functionality anywhere in the repo
+# that we do not want to ignore
+
+# GitHub settings
+!.gitignore
+!.gitattributes
+
+# Git placeholder file (to commit empty folders)
+!/**/*.gitkeep
+
+# Keep markdown files used for documentation on GitHub
+!README.md
+!CONTRIBUTING.md
+!LICENSE*
+
+#######################
+# List of folders that we do not want to ignore
+!*/
+
+#######################
+# List of types of files that we do not want to ignore
+
+# Stata
+!/**/*.do
+
+# Markdown
+!/**/*.md
+
+# Files to create custom layout and functionality
+!/**/*.css
+!/**/*.js
+
+#######################
+# Include some additional file formats in any folder.
+!/**/*.png
+!/**/*.doc

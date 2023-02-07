@@ -1,0 +1,1 @@
+To access the raw datasets, please register with the Enterprise Analysis Unit (DECEA) by completing [the Enterprise Surveys Data Access Protocol](https://login.enterprisesurveys.org/content/sites/financeandprivatesector/en/signup.html)
