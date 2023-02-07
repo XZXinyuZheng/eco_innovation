@@ -19,4 +19,8 @@ This repository consists of codes to replicate the empirical analysis in my work
   - image: images of descriptive analysis or robustness check
   - table: tables of regression results
 
-**Important Note: This repo is meant to present the codes of analysis and research project management. Althrough this repo consists of a data folder, it is empty to protect data confidentiality in accordance with World Bank rules governing “strictly confidential” information. To access the raw datasets, please register with the Enterprise Analysis Unit (DECEA) by completing [the Enterprise Surveys Data Access Protocol](https://login.enterprisesurveys.org/content/sites/financeandprivatesector/en/signup.html).**
+**Important Note: This repo is meant to present the codes of analysis and research project management; please do not share and distribute codes without consent. Althrough this repo consists of a data folder, it is empty to protect data confidentiality in accordance with World Bank rules governing “strictly confidential” information. To access the raw datasets, please register with the Enterprise Analysis Unit (DECEA) by completing [the Enterprise Surveys Data Access Protocol](https://login.enterprisesurveys.org/content/sites/financeandprivatesector/en/signup.html).**
+
+### Author
+Xinyu Zheng, candidate of Master of Public Policy at McCourt School of Public Policy, Georgetown University
+xz531@georgetown.edu
