@@ -1,4 +1,4 @@
-local dir "D:\GU\thesis_data\"
+global dir "D:/GU/thesis_data"
 
 ********************************************************************************
 **select variables**
@@ -22,8 +22,8 @@ local dir "D:\GU\thesis_data\"
 
 *** Covariats
 * a1: countries
-* a4a: sector - manufactoring, retail, and other service
-* a6a: firm size (0: l1: firm size - # of employees)
+* a4b: screening sector 
+* a6b: screening firm size
 * b2c: percentage of this firm is owned by government or state
 * h8 - h9: whether and how much spend on R&D
 * h1, h5, BMh1, BMh2, Bmh3: innovation
@@ -41,38 +41,49 @@ local dir "D:\GU\thesis_data\"
 *** Survey： Stratification
 * wmedian
 * a2: region - strata
+* a4a: sampling sector
+* a6a: sampling firm size (0: l1: firm size - # of employees)
 
 *** IV
-* c9a, c9b: power outage loss in % or absolute value
-* d6: loss of exports due to theft
-* d7: loss of exports due to breakag or spoilage
-* d10: loss of inports due to theft
-* d11: loss of inports due to breakag or spoilage
-* i3, i4a, i4b: loss as a result of theft, robbery, vandalism, arson, internet hacking or fraudulent internet transactions
+* c9a, c9b: power outage loss in % or absolute value (NO)
+* d6: loss of exports due to theft (NO)
+* d7: loss of exports due to breakag or spoilage (NO)
+* d10: loss of inports due to theft (NO)
+* d11: loss of inports due to breakag or spoilage (NO)
+* i3, i4a, i4b: loss as a result of theft, robbery, vandalism, arson, internet hacking or fraudulent internet transactions (NO)
 * k1c: percentage of the value of total annual purchases of material inputs or services was purchased on credit
+* k2c: percentage of the value of total annual purchases of material inputs or services was sold on credit
+* k15a, k15b: outstanding balance of all open lines of credit and loans held by this establishment
+* a3x: city/town/village
+* a3a: screening region
+* a3: population
 
 ********************************************************************************
 **Appending**
 ********************************************************************************
 
-cd "`dir'data\medium"
+local file_list : dir "$dir/data/medium" files "*.dta"
 
 tempfile clean_data
 save `clean_data', emptyok
 
-foreach i in Albania Bosnia-and-Herzegovina Bulgaria Croatia Cyprus Estonia North-Macedonia Kazakhstan Kosovo Kyrgyz-Republic Latvia Lithuania Mongolia Montenegro Romania Serbia Slovenia Tajikistan Ukraine Uzbekistan Azerbaijan Georgia Jordan Morocco Moldova West-Bank-and-Gaza Lebanon {
-	use "`i'-2019-full-data.dta", clear
-	keep BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGc1 BMGc16 BMGc18 BMGd6 BMGd7 BMGa4 k30 k3a a1 a2 a4a a6a b2c b8 b8x e2 n2b n2f idstd wmedian h1 h5 BMh1 BMh2 BMh3 i3 i4a i4b k1c
-	foreach v in a2 a4a a6a {
+foreach i in `file_list' {
+	use "$dir/data/medium/`i'", clear
+  	keep BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a1 a2 a4a a6a b2c b8 b8x e2 n2b n2f idstd wmedian h1 h5 BMh1 BMh2 BMh3 k15a k15b d2 BMGb1 a4b a6b a3 a3a n2a n2b n2f
+	foreach v in a1 a2 a4a a6a a4b a6b a3 a3a {
 		decode `v', gen(`v'_s)
 		drop `v'
 		rename `v'_s `v' 
 	}
+	gen sampling_region = a1 + " " + a2
+	replace sampling_region = "" if missing(a2)
+	gen region = a1 + " " + a3a
+	replace region = "" if missing(a3a)
 	append using `clean_data', force
 	save `clean_data', replace
-}
+	}
 
-foreach v in a2 a4a a6a {
+foreach v in a1 a2 a4a a6a a4b a6b sampling_region region a3 {
 		encode `v', gen(`v'_n)
 		drop `v'
 		rename `v'_n `v' 
@@ -83,7 +94,7 @@ foreach v in a2 a4a a6a {
 ********************************************************************************
 
 * dummies
-foreach v in BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGc1 BMGc16 BMGc18 BMGd6 BMGd7 BMGa4 h1 h5 BMh1 BMh2 BMh3 {
+foreach v in BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 h1 h5 BMh1 BMh2 BMh3 {
 	recode `v' (1 = 1 "yes") (2 = 0 "No") (else = .), prefix(new_)
 }
 
@@ -118,8 +129,16 @@ foreach i in n2b n2f {
 }
 egen cost = rowtotal(n2b n2f)
 
-* size
-recode a6a (4 = 1 "Small") (2 = 2 "Medium") (1 8 = 3 "Large") (else = 4 "Unknow"), gen (size)
+* sale
+replace d2 = . if d2 == -9
+rename d2 sale
+
+* cost / sale
+gen cost_sale = cost / sale
+label variable cost_sale "the ratio of cost over sale"
+
+* sampling size
+recode a6a (4 = 1 "Small") (2 = 2 "Medium") (1 8 = 3 "Large") (else = 4 "Unknow"), gen (sampling_size)
 
 * finance from external resource
 gen f_external = .
@@ -131,30 +150,35 @@ gen state_owned = b2c
 replace state_owned = . if inlist(b2c, -9, .)
 label variable state_owned "pct owned by government or state"
 
-rename new_BMGc23a heating_cooling
-rename new_BMGc23b energy_generation
-rename new_BMGc23c machinery_equipment
-rename new_BMGc23d energy_management
-rename new_BMGc23g vehicles
-rename new_BMGc23i lighting_system
-rename new_BMGc25 energy_efficiency
-rename new_BMGc1 monitor
-rename new_BMGc16 energy_target
-rename new_BMGc18 co2_target
-rename new_BMGd6 tax
-rename new_BMGd7 standard
-rename new_BMGa4 customer
-rename a1 country
-rename a2 region
-rename a4a sector
+rename (new_BMGc23a new_BMGc23b new_BMGc23c new_BMGc23d new_BMGc23g new_BMGc23i new_BMGc25 new_BMGd6 new_BMGd7 new_BMGa4 a1 a4a a3) ///
+       (heating_cooling energy_generation machinery_equipment energy_management vehicles lighting_system energy_efficiency tax standard customer country sampling_sector population)
 
-gen loss = .
-replace loss = i4a if i3 == 1
-replace loss = 0 if i3 == 0
+* potential iv: outstanding loan
+replace k15a = . if k15a == -9
+replace k15b = . if inlist(k15b, -8, -9)
+rename (k15a k15b) (amount_loan number_loan) 
 
-drop BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGc1 BMGc16 BMGc18 BMGd6 BMGd7 BMGa4 k30 k3a a6a b2c b8 b8x e2 n2b n2f h1 h5 BMh1 BMh2 BMh3 i3 i4a i4b k1c new_h1 new_h5 new_BMh1 new_BMh2 new_BMh3
+* loan / sale
+gen amount_loan_sale =  amount_loan / sale
+label variable amount_loan_sale "how many times is the loan to annual sale?"
 
-save "`dir'data\clean\clean_data.dta", replace
+* loss during extreme weather
+replace BMGb1 = . if BMGb1 == -9
+replace BMGb1 = 0 if BMGb1 == 2
+rename BMGb1 loss
+
+* screening size
+recode a6b (3 4 = 0 "Small") (2 = 1 "Medium") (1 = 2 "Large"), gen(size)
+
+* screening sector
+*recode a4b (1 2 4/8 11/19 22 23 26 28 = 0 "Manufacturing") (3 = 1 "Construction") (9 20 21 27 = 2 "Service") (24 25 = 3 "Transportation") (10 = 4 "IT"), gen(sector)
+replace a4b = 24 if a4b == 25
+rename a4b sector_specific
+recode sector_specific (1 2 4/8 11/19 22 23 26 28 = 0 "Manufacturing") (9 20 21 27 = 1 "Service") (3 10 24 25 = 2 "Others"), gen(sector_simple)
+
+drop BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a6a b2c b8 b8x e2 n2b n2f h1 h5 BMh1 BMh2 BMh3 new_h1 new_h5 new_BMh1 new_BMh2 new_BMh3 a6b a2 a3a
+
+save "$dir\data\clean\clean_data.dta", replace
 
 ********************************************************************************
 **check missing value**
