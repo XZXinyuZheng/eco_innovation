@@ -4,46 +4,80 @@ cd "D:\GU\thesis_data"
 
 use "data\clean\clean_data.dta", clear
 
+gen developed = 0
+
+replace developed = 1 if inlist(country, 6, 7, 14, 16, 24)
+
+drop if developed == 1
+
 ********************************************************************************
 **sampling weight**
 ********************************************************************************
 
 gen reweight = .
 
-foreach c in 37 38 42 44 51 52 54 55 60 61 62 63 64 65 66 68 69 70 71 74 75 77 78 79 80 129 158 {
+levelsof country, local(country)
+
+foreach c in `country' {
 	sum wmedian if country == `c'
 	replace reweight = wmedian / r(sum) if country == `c'
 	}
 	
-replace reweight = reweight * (1/27)
+replace reweight = reweight * (1/23)
 
-egen strata = group(region sector size)
+egen strata = group(sampling_region sampling_sector sampling_size)
 
-svyset idstd [pweight = wmedian], strata(strata) singleunit(centered)
+svyset idstd [pweight = reweight], strata(strata) singleunit(centered)
 
 ********************************************************************************
 **preprocess for descriptive anaylsis**
 ********************************************************************************
 
-replace size = . if size == 4
+global y_varlist heating_cooling energy_generation machinery_equipment energy_management vehicles lighting_system energy_efficiency
 
-recode sector (1 2 3 5 6 7 8 11 13 = 0 "Industry") (4 9 10 12 = 1 "Service"), gen(sector_2)
+gen fc_s = .
+replace fc_s = 1 if fc == 4
+replace fc_s = 0 if inlist(fc, 0, 1, 2, 3)
 
-global y_varlist heating_cooling energy_generation machinery_equipment energy_management vehicles lighting_system energy_efficiency monitor energy_target co2_target
+global x_varlist fc fc_s innovation iso competitor customer cost_sale tax standard f_external size sector_specific country
 
-global x_varlist fc f_external state_owned country size sector_2 innovation iso competitor customer cost tax standard
+* drop obs containting at least one missing
 
-********************************************************************************
-**frequency distribution**
-********************************************************************************
-foreach n in 0 1 2 3 4 {
-	svy: tab sector_2 size if fc == `n'
-}
+egen nmcount = rownonmiss($y_varlist fc innovation iso competitor customer cost_sale tax standard f_external sector_specific size country)
+
+keep if nmcount == 19 
 
 ********************************************************************************
 **summry table**
 ********************************************************************************
 svy: mean $y_varlist $x_varlist
+
+********************************************************************************
+**frequency distribution**
+********************************************************************************
+/*
+foreach n in 0 1 2 3 4 {
+	svy: tab sector_simple size if fc == `n'
+}
+
+svy: mean $y_varlist fc_s, over(size sector_simple)
+
+svy: mean heating_cooling, over(size sector_simple)
+
+*/
+
+egen upgrade = rowtotal(heating_cooling machinery_equipment lighting_system) // vehicles
+egen management = rowtotal(energy_efficiency energy_management)
+
+bysort sector_simple size: correlate fc_s energy_generation vehicles upgrade management [aweight = reweight]
+
+forvalues sector = 0/2 {
+	forvalues size = 0/2 {
+		foreach y in energy_generation vehicles upgrade management {
+			svy: regress `y' fc_s if sector_simple == `sector' & size == `size'
+		}
+	}
+}
 
 ********************************************************************************
 **correlation among independent variables**

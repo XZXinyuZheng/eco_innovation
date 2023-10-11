@@ -1,0 +1,20 @@
+{\rtf1\fs24
+\trowd\trgaph75\trleft-75\intbl\trqc\clbrdrt\brdrs\cellx2592\clbrdrt\brdrs\cellx3744\clbrdrt\brdrs\cellx4896\clbrdrt\brdrs\cellx6336\clbrdrt\brdrs\cellx7488\clbrdrt\brdrs\cellx8640\clbrdrt\brdrs\cellx9792\clbrdrt\brdrs\cellx10944\clbrdrt\brdrs\cellx12096\clbrdrt\brdrs\cellx13248
+\ql \cell\qc (1)\cell\qc (2)\cell\qc (3)\cell\qc (4)\cell\qc (5)\cell\qc (6)\cell\qc (7)\cell\qc (8)\cell\qc (9)\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2592\cellx3744\cellx4896\cellx6336\cellx7488\cellx8640\cellx9792\cellx10944\cellx12096\cellx13248
+\trowd\trgaph75\trleft-75\trqc\clbrdrb\brdrs\cellx2592\clbrdrb\brdrs\cellx3744\clbrdrb\brdrs\cellx4896\clbrdrb\brdrs\cellx6336\clbrdrb\brdrs\cellx7488\clbrdrb\brdrs\cellx8640\clbrdrb\brdrs\cellx9792\clbrdrb\brdrs\cellx10944\clbrdrb\brdrs\cellx12096\clbrdrb\brdrs\cellx13248
+\ql VARIABLES\cell\qc 0|0\cell\qc 0|1\cell\qc 0|2\cell\qc 1|0\cell\qc 1|1\cell\qc 1|2\cell\qc 2|0\cell\qc 2|1\cell\qc 2|2\cell\row
+\trowd\trgaph75\trleft-75\trqc\cellx2592\cellx3744\cellx4896\cellx6336\cellx7488\cellx8640\cellx9792\cellx10944\cellx12096\cellx13248
+\ql \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\row
+\ql fc_s\cell\qc 0.323\cell\qc -0.131\cell\qc -2.208***\cell\qc -0.399\cell\qc 1.710\cell\qc 0.596\cell\qc 1.345\cell\qc 4.688\cell\qc -0.0569\cell\row
+\ql \cell\qc (0.493)\cell\qc (0.528)\cell\qc (0.686)\cell\qc (0.818)\cell\qc (1.347)\cell\qc (1.660)\cell\qc (1.807)\cell\qc (2.982)\cell\qc (1.302)\cell\row
+\ql \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\qc \cell\row
+\ql Observations\cell\qc 1,498\cell\qc 1,389\cell\qc 815\cell\qc 1,402\cell\qc 728\cell\qc 309\cell\qc 476\cell\qc 319\cell\qc 200\cell\row
+\ql R-squared\cell\qc 0.257\cell\qc 0.271\cell\qc 0.335\cell\qc 0.230\cell\qc 0.182\cell\qc 0.380\cell\qc 0.435\cell\qc \cell\qc 0.420\cell\row
+\ql Control variables\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\row
+\trowd\trgaph75\trleft-75\trqc\trbrdrb\brdrs\clbrdrb\brdrs\cellx2592\clbrdrb\brdrs\cellx3744\clbrdrb\brdrs\cellx4896\clbrdrb\brdrs\cellx6336\clbrdrb\brdrs\cellx7488\clbrdrb\brdrs\cellx8640\clbrdrb\brdrs\cellx9792\clbrdrb\brdrs\cellx10944\clbrdrb\brdrs\cellx12096\clbrdrb\brdrs\cellx13248
+\ql Control country\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\qc Yes\cell\row
+\pard\qc
+Robust standard errors in parentheses\par
+*** p<0.01, ** p<0.05, * p<0.1\par
+}

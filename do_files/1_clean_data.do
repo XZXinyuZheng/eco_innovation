@@ -24,7 +24,7 @@ global dir "D:/GU/thesis_data"
 * a1: countries
 * a4b: screening sector 
 * a6b: screening firm size
-* b2c: percentage of this firm is owned by government or state
+* b2a, b2c, b2d: percentage of this firm is owned by domestic, foreign, and government or state
 * h8 - h9: whether and how much spend on R&D
 * h1, h5, BMh1, BMh2, Bmh3: innovation
 * b8 - b8x: Recognized quality certification
@@ -69,7 +69,7 @@ save `clean_data', emptyok
 
 foreach i in `file_list' {
 	use "$dir/data/medium/`i'", clear
-  	keep BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a1 a2 a4a a6a b2c b8 b8x e2 n2b n2f idstd wmedian h1 h5 BMh1 BMh2 BMh3 k15a k15b d2 BMGb1 a4b a6b a3 a3a n2a n2b n2f
+  	keep BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a1 a2 a4a a6a b2c b8 b8x e2 n2b n2f idstd wmedian h1 h5 BMh1 BMh2 BMh3 k15a k15b d2 BMGb1 a4b a6b a3 a3a n2a n2b n2f b2a b2b
 	foreach v in a1 a2 a4a a6a a4b a6b a3 a3a {
 		decode `v', gen(`v'_s)
 		drop `v'
@@ -146,9 +146,17 @@ replace f_external = 100 - k3a if k3a != -9
 label variable f_external "working capital from external sources"
 
 * owned by government
-gen state_owned = b2c
-replace state_owned = . if inlist(b2c, -9, .)
-label variable state_owned "pct owned by government or state"
+gen pct_state_owned = b2c
+replace pct_state_owned = . if inlist(b2c, -9, .)
+label variable pct_state_owned "pct owned by government or state"
+
+gen pct_domestic = b2a
+replace pct_domestic = . if inlist(b2a, -9, .)
+label variable pct_domestic "pct owned by domestic individuals, companies, or organizations"
+
+gen pct_foreign = b2b
+replace pct_foreign = . if inlist(b2b, -9, .)
+label variable pct_foreign "pct owned by foreign individuals, companies, or organizations"
 
 rename (new_BMGc23a new_BMGc23b new_BMGc23c new_BMGc23d new_BMGc23g new_BMGc23i new_BMGc25 new_BMGd6 new_BMGd7 new_BMGa4 a1 a4a a3) ///
        (heating_cooling energy_generation machinery_equipment energy_management vehicles lighting_system energy_efficiency tax standard customer country sampling_sector population)
@@ -176,7 +184,7 @@ replace a4b = 24 if a4b == 25
 rename a4b sector_specific
 recode sector_specific (1 2 4/8 11/19 22 23 26 28 = 0 "Manufacturing") (9 20 21 27 = 1 "Service") (3 10 24 25 = 2 "Others"), gen(sector_simple)
 
-drop BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a6a b2c b8 b8x e2 n2b n2f h1 h5 BMh1 BMh2 BMh3 new_h1 new_h5 new_BMh1 new_BMh2 new_BMh3 a6b a2 a3a
+drop BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a6a b2a b2b b2c b8 b8x e2 n2b n2f h1 h5 BMh1 BMh2 BMh3 new_h1 new_h5 new_BMh1 new_BMh2 new_BMh3 a6b a2 a3a
 
 save "$dir\data\clean\clean_data.dta", replace
 

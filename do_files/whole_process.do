@@ -1,14 +1,374 @@
+global dir "D:/GU/thesis_data"
+
+********************************************************************************
+**Appending**
+********************************************************************************
+
+local file_list : dir "$dir/data/medium" files "*.dta"
+
+tempfile clean_data
+save `clean_data', emptyok
+
+foreach i in `file_list' {
+	use "$dir/data/medium/`i'", clear
+  	keep BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a1 a2 a4a a6a b2c b8 b8x e2 n2b n2f idstd wmedian h1 h5 BMh1 BMh2 BMh3 k15a k15b d2 BMGb1 a4b a6b a3 a3a n2a n2b n2f b2a b2b
+	foreach v in a1 a2 a4a a6a a4b a6b a3 a3a {
+		decode `v', gen(`v'_s)
+		drop `v'
+		rename `v'_s `v' 
+	}
+	gen sampling_region = a1 + " " + a2
+	replace sampling_region = "" if missing(a2)
+	gen region = a1 + " " + a3a
+	replace region = "" if missing(a3a)
+	append using `clean_data', force
+	save `clean_data', replace
+	}
+
+foreach v in a1 a2 a4a a6a a4b a6b sampling_region region a3 {
+		encode `v', gen(`v'_n)
+		drop `v'
+		rename `v'_n `v' 
+	}
+
+********************************************************************************
+**recode variables**
+********************************************************************************
+
+* dummies
+foreach v in BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 h1 h5 BMh1 BMh2 BMh3 {
+	recode `v' (1 = 1 "yes") (2 = 0 "No") (else = .), prefix(new_)
+}
+
+* financial constraints
+gen fc = k30
+replace fc = . if inlist(k30, -9, -7, .)
+label define fc_label 0 "No" 1 "Minor" 2 "Moderate" 3 "Major" 4 "Very severe"
+label values fc fc_label
+label variable fc "financial constraints"
+
+* innovation
+egen innovation = rowtotal(new_h1 new_h5 new_BMh1 new_BMh2 new_BMh3), m
+replace innovation = . if new_h1 == . | new_h5 == . | new_BMh1 == .| new_BMh2 == .| new_BMh3 == .
+
+* ISO
+gen iso = 0
+replace iso = 1 if regexm(b8x, "900|1400")
+replace iso = . if inlist(b8, -9, .)
+label define binary_label 1 "Yes" 0 "No"
+label values iso binary_label
+label variable iso "adopt iso 1900 or iso 14000 series"
+
+* competitor
+gen competitor = e2
+replace competitor = . if e2 == -9
+replace competitor = 10000 if e2 == -4
+label variable competitor "the number of competitors"
+
+* cost
+foreach i in n2b n2f {
+	replace `i' = . if `i' == -9
+}
+egen cost = rowtotal(n2b n2f)
+
+* sale
+replace d2 = . if d2 == -9
+rename d2 sale
+
+* cost / sale
+gen cost_sale = cost / sale
+label variable cost_sale "the ratio of cost over sale"
+
+* sampling size
+recode a6a (4 = 1 "Small") (2 = 2 "Medium") (1 8 = 3 "Large") (else = 4 "Unknow"), gen (sampling_size)
+
+* finance from external resource
+gen f_external = .
+replace f_external = 100 - k3a if k3a != -9
+label variable f_external "working capital from external sources"
+
+* owned by government
+gen pct_state_owned = b2c
+replace pct_state_owned = . if inlist(b2c, -9, .)
+label variable pct_state_owned "pct owned by government or state"
+
+gen pct_domestic = b2a
+replace pct_domestic = . if inlist(b2a, -9, .)
+label variable pct_domestic "pct owned by domestic individuals, companies, or organizations"
+
+gen pct_foreign = b2b
+replace pct_foreign = . if inlist(b2b, -9, .)
+label variable pct_foreign "pct owned by foreign individuals, companies, or organizations"
+
+rename (new_BMGc23a new_BMGc23b new_BMGc23c new_BMGc23d new_BMGc23g new_BMGc23i new_BMGc25 new_BMGd6 new_BMGd7 new_BMGa4 a1 a4a a3) ///
+       (heating_cooling energy_generation machinery_equipment energy_management vehicles lighting_system energy_efficiency tax standard customer country sampling_sector population)
+
+* potential iv: outstanding loan
+replace k15a = . if k15a == -9
+replace k15b = . if inlist(k15b, -8, -9)
+rename (k15a k15b) (amount_loan number_loan) 
+
+* loan / sale
+gen amount_loan_sale =  amount_loan / sale
+label variable amount_loan_sale "how many times is the loan to annual sale?"
+
+* loss during extreme weather
+replace BMGb1 = . if BMGb1 == -9
+replace BMGb1 = 0 if BMGb1 == 2
+rename BMGb1 loss
+
+* screening size
+recode a6b (3 4 = 0 "Small") (2 = 1 "Medium") (1 = 2 "Large"), gen(size)
+
+* screening sector
+*recode a4b (1 2 4/8 11/19 22 23 26 28 = 0 "Manufacturing") (3 = 1 "Construction") (9 20 21 27 = 2 "Service") (24 25 = 3 "Transportation") (10 = 4 "IT"), gen(sector)
+replace a4b = 24 if a4b == 25
+rename a4b sector_specific
+recode sector_specific (1 2 4/8 11/19 22 23 26 28 = 0 "Manufacturing") (9 20 21 27 = 1 "Service") (3 10 24 25 = 2 "Others"), gen(sector_simple)
+
+drop BMGc23a BMGc23b BMGc23c BMGc23d BMGc23g BMGc23i BMGc25 BMGd6 BMGd7 BMGa4 k30 k3a a6a b2a b2b b2c b8 b8x e2 n2b n2f h1 h5 BMh1 BMh2 BMh3 new_h1 new_h5 new_BMh1 new_BMh2 new_BMh3 a6b a2 a3a
+
+save "$dir\data\clean\clean_data.dta", replace
+
+********************************************************************************
+**check missing value**
+********************************************************************************
+
+egen nmcount = rownonmiss($y_varlist $x_varlist)
+tab nmcount
+
+
+*-------------------------------------------------------------------------------
+********************************************************************************
+*****Descriptive Analysis*****
+********************************************************************************
+*-------------------------------------------------------------------------------
+
+use "$dir/data/clean/clean_data.dta", clear
+
+gen developed = 0
+
+replace developed = 1 if inlist(country, 6, 7, 14, 16, 24)
+
+drop if developed == 1
+
+********************************************************************************
+**sampling weight**
+********************************************************************************
+
+gen reweight = .
+
+levelsof country, local(country)
+
+foreach c in `country' {
+	sum wmedian if country == `c'
+	replace reweight = wmedian / r(sum) if country == `c'
+	}
+	
+replace reweight = reweight * (1/23)
+
+egen strata = group(sampling_region sampling_sector sampling_size)
+
+svyset idstd [pweight = reweight], strata(strata) singleunit(centered)
+
+********************************************************************************
+**preprocess for descriptive anaylsis**
+********************************************************************************
+
+global y_varlist heating_cooling energy_generation machinery_equipment energy_management vehicles lighting_system energy_efficiency
+
+gen fc_s = .
+replace fc_s = 1 if fc == 4
+replace fc_s = 0 if inlist(fc, 0, 1, 2, 3)
+
+global x_varlist fc fc_s innovation iso competitor customer cost_sale tax standard f_external size sector_specific country
+
+* drop obs containting at least one missing
+
+egen nmcount = rownonmiss($y_varlist fc innovation iso competitor customer cost_sale tax standard f_external sector_specific size country)
+
+keep if nmcount == 19 
+
+********************************************************************************
+**summry table**
+********************************************************************************
+svy: mean $y_varlist $x_varlist
+
+********************************************************************************
+**frequency distribution**
+********************************************************************************
+/*
+foreach n in 0 1 2 3 4 {
+	svy: tab sector_simple size if fc == `n'
+}
+
+svy: mean $y_varlist fc_s, over(size sector_simple)
+
+svy: mean heating_cooling, over(size sector_simple)
+
+*/
+
+egen upgrade = rowtotal(heating_cooling machinery_equipment lighting_system) // vehicles
+egen management = rowtotal(energy_efficiency energy_management)
+
+bysort sector_simple size: correlate fc_s energy_generation vehicles upgrade management [aweight = reweight]
+
+forvalues sector = 0/2 {
+	forvalues size = 0/2 {
+		foreach y in energy_generation vehicles upgrade management {
+			svy: regress `y' fc_s if sector_simple == `sector' & size == `size'
+		}
+	}
+}
+
+********************************************************************************
+**correlation among independent variables**
+********************************************************************************
+svy: sem fc f_external state_owned country size sector_2 innovation iso competitor customer tax standard, standardized
+
+* problem with cost
+
+******************************
+**visualization for presentation： do not include in thesis**
+******************************
+
+*correlation bewteen dependent and key independent
+
+foreach y in $y_varlist {
+	graph hbox fc [pw = reweight], ///
+     over(`y', label(labsize(2))) ///
+     over(size, label(labsize(2))) ///
+	 over(sector_2, label(labsize(2))) ///
+     ytitle("`y'", size(2)) ///
+     title("{bf}Correlation between eco-innovation and financial constraints", pos(11) size(2)) ///
+	 subtitle("{bf}by firm size and sector", pos(11) size(2)) ///
+	 xsize(5) ysize(7) ///
+	 legend(rows(1) symysize(2) symxsize(2) size(2)) ///
+	 nooutsides ///
+	 graphregion(fcolor(white))
+	
+	graph export "$dir/output/image/fc_`y'.png", replace
+	 
+   *graph hbox y [pw = reweight], ///
+   *  over(fc, label(labsize(2.5))) ///
+   *  over(sector_2, label(labsize(2.5))) ///
+   *  ytitle("Component1", size(2.25)) ///
+   *  title("{bf}Correlation between eco-innovation and financial constraints by sector", pos(11) size(2.5)) ///
+   *  scheme(white_w3d)
+}
+
+
+*correlation bewteen dependent and all independent
+
+  * Only change names of variable in local var_corr. 
+  * The code will hopefully do the rest of the work without any hitch
+  local var_corr $x_varlist
+  local countn : word count `var_corr'
+  
+  * Use correlation command
+  qui pwcorr `var_corr'
+  matrix C = r(C)
+  local rnames : rownames C
+  
+  * Now to generate a dataset from the Correlation Matrix
+  clear
+   
+   * For no diagonal and total count
+   local tot_rows : display `countn' * `countn'
+   set obs `tot_rows'
+   
+   generate corrname1 = ""
+   generate corrname2 = ""
+   generate y = .
+   generate x = .
+   generate corr = .
+   generate abs_corr = .
+   
+   local row = 1
+   local y = 1
+   local rowname = 2
+    
+   foreach name of local var_corr {
+    forvalues i = `rowname'/`countn' { 
+     local a : word `i' of `var_corr'
+     replace corrname1 = "`name'" in `row'
+     replace corrname2 = "`a'" in `row'
+     replace y = `y' in `row'
+     replace x = `i' in `row'
+     replace corr = round(C[`i',`y'], .01) in `row'
+     replace abs_corr = abs(C[`i',`y']) in `row'
+     
+     local ++row
+     
+    }
+    
+    local rowname = `rowname' + 1
+    local y = `y' + 1
+   
+   }
+   
+  drop if missing(corrname1)
+  replace abs_corr = 0.1 if abs_corr < 0.1 & abs_corr > 0.04
+  
+  colorpalette HCL pinkgreen, n(10) nograph intensity(0.65)
+  *colorpalette CET CBD1, n(10) nograph //Color Blind Friendly option
+  generate colorname = ""
+  local col = 1
+  forvalues colrange = -1(0.2)0.8 {
+   replace colorname = "`r(p`col')'" if corr >= `colrange' & corr < `=`colrange' + 0.2'
+   replace colorname = "`r(p10)'" if corr == 1
+   local ++col
+  } 
+  
+  
+  * Plotting
+  * Saving the plotting code in a local 
+  forvalues i = 1/`=_N' {
+  
+   local slist "`slist' (scatteri `=y[`i']' `=x[`i']' "`: display %3.2f corr[`i']'", mlabposition(0) msize(`=abs_corr[`i']*15') mcolor("`=colorname[`i']'"))"
+  
+  }
+  
+  
+  * Gather Y axis labels
+  labmask y, val(corrname1)
+  labmask x, val(corrname2)
+  
+  levelsof y, local(yl)
+  foreach l of local yl {
+   local ylab "`ylab' `l'  `" "`:lab (y) `l''" "'" 
+   
+  } 
+
+  * Gather X Axis labels
+  levelsof x, local(xl)
+  foreach l of local xl {
+   local xlab "`xlab' `l'  `" "`:lab (x) `l''" "'" 
+   
+  }  
+  
+  * Plot all the above saved lolcas
+  twoway `slist', title("Correlogram of Continuous Variables", size(3) pos(11)) ///
+    xlabel(`xlab', labsize(2.5)) ylabel(`ylab', labsize(2.5)) ///
+    xscale(range(1.75 )) yscale(range(0.75 )) ///
+    ytitle("") xtitle("") ///
+    legend(off) ///
+    aspect(1) ///
+    scheme(white_tableau)
+
+graph export "$dir/output/image/correlation.png", replace
+
+
+*-------------------------------------------------------------------------------
+********************************************************************************
 *****Regression*****
-
 ********************************************************************************
+*-------------------------------------------------------------------------------
+
 **setup**
-********************************************************************************
-
-global dir "D:\GU\thesis_data"
-
 cd "$dir"
 
-use "$dir\data\clean\clean_data.dta", clear
+use "data/clean/clean_data.dta", clear
 
 set scheme sj
 
